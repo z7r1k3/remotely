@@ -57,28 +57,28 @@ def edit(hostname):  # TODO: Make this an interactive editor
     add(hostname)
 
 
-def read(hostname):
+def read(hostname=None):
     try:
         with open('data/hosts.json', 'r') as hosts_file:
-            host = json.load(hosts_file)[hostname]
-
-            return host
-    except Exception as e:
+            if hostname is not None:
+                return json.load(hosts_file)[hostname]
+            else:
+                return json.load(hosts_file)
+    except:
         print('***ERROR: unable to locate \"' + hostname + '\"')
 
 
 def remove(hostname):  # TODO: Little bit hacky, should improve
-    if exists('data/hosts.json'):
+    try:
         with open('data/hosts.json', 'r') as hosts_read:
-            try:
-                hosts_data = json.load(hosts_read)
+            hosts_data = json.load(hosts_read)
 
-                del hosts_data[hostname]
+            del hosts_data[hostname]
 
-                with open('data/hosts.json', 'w+') as hosts_write:
-                    json.dump(hosts_data, hosts_write, indent=4)
-            except Exception as e:
-                print('***ERROR: Unable to delete host')
+            with open('data/hosts.json', 'w+') as hosts_write:
+                json.dump(hosts_data, hosts_write, indent=4)
+    except:
+        print('***ERROR: Unable to delete host')
 
 
 # Secondary modules
@@ -92,7 +92,7 @@ def append(hostname, new_host):
             hosts_file.seek(0)
 
             json.dump(hosts_data, hosts_file, indent=4)
-        except Exception as e:
+        except:
             if input('***ERROR: hosts.json is unreadable' +
                      '\nWould you like to overwrite it?' +
                      '\n(Y)es, (N)o\n').lower().startswith('y'):
